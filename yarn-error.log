@@ -1,0 +1,51 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add -D rollup rollup-plugin-common-js rollup-plugin-node-resolve
+
+PATH: 
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python27/:/mnt/c/Python27/Scripts:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/wamp64/bin/php/php7.3.1:/mnt/c/Program Files/Intel/WiFi/bin/:/mnt/c/Program Files/Common Files/Intel/WirelessCommon/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Yarn/bin/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/ProgramData/ComposerSetup/bin:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Users/wajua/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/wajua/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/wajua/AppData/Local/Yarn/bin:/mnt/c/Users/wajua/AppData/Local/Android/Sdk/platform-tools:/mnt/c/Users/wajua/AppData/Roaming/Composer/vendor/bin:/mnt/c/Program Files/heroku/bin:/mnt/c/Users/wajua/AppData/Local/hyper/app-3.0.2/resources/bin:/mnt/c/Exercism:/mnt/c/Users/wajua/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/wajua/AppData/Roaming/npm:/mnt/c/Program Files/JetBrains/WebStorm 2019.2.1/bin:/mnt/c/Users/wajua/AppData/Local/Programs/Microsoft VS Code Insiders/bin:/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2019.2.3/bin
+
+Yarn version: 
+  1.19.1
+
+Node version: 
+  12.8.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/rollup-plugin-common-js: Not found
+      at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66926:18)
+      at Request.self.callback (/usr/share/yarn/lib/cli.js:140564:22)
+      at Request.emit (events.js:203:13)
+      at Request.<anonymous> (/usr/share/yarn/lib/cli.js:141536:10)
+      at Request.emit (events.js:203:13)
+      at IncomingMessage.<anonymous> (/usr/share/yarn/lib/cli.js:141458:12)
+      at Object.onceWrapper (events.js:291:20)
+      at IncomingMessage.emit (events.js:208:15)
+      at endReadableNT (_stream_readable.js:1168:12)
+      at processTicksAndRejections (internal/process/task_queues.js:77:11)
+
+npm manifest: 
+  {
+    "name": "vuex-observable",
+    "version": "0.0.1",
+    "description": "use rx-js magic for async in Vuex",
+    "module": "./dist/esm/index.js",
+    "main": "./dist/cjs/index.js",
+    "es2015": "./dist/es2015/index.js",
+    "sideEffects": false,
+    "author": "waju.abolarin@gmail.com",
+    "license": "MIT",
+    "private": false,
+    "peerDependencies": {
+      "rxjs": "6.x",
+      "vuex": "3.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

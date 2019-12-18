@@ -2,9 +2,9 @@
   "name": "vuex-observable",
   "version": "0.0.1",
   "description": "use rx-js magic for async in Vuex",
-  "module": "./dist/esm/index.js",
-  "main": "./dist/cjs/index.js",
-  "es2015": "./dist/es2015/index.js",
+  "module": "dist/index.esm.js",
+  "main": "dist/index.cjs.js",
+  "browser": "dist/index.umd.js",
   "sideEffects": false,
   "author": "waju.abolarin@gmail.com",
   "license": "MIT",
@@ -12,5 +12,22 @@
   "peerDependencies": {
     "rxjs": "6.x",
     "vuex": "3.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rm -rf dist &&  rollup -c -w",
+    "test": "node test test.js",
+    "pretest": "npm run test"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
+    "rollup": "^1.27.13",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }

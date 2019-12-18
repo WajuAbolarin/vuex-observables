@@ -1,28 +1,50 @@
 // @ts-nocheck
-import { Subject, of, queueScheduler } from "rxjs";
+import { Subject, of, queueScheduler, from } from "rxjs";
 import { mergeMap, map, observeOn, subscribeOn } from "rxjs/operators";
 
-export function createPlugin(userEpic) {
+function createPlugin() {
   const QueueScheduler = queueScheduler.constructor;
   const uniqueQueueScheduler = new QueueScheduler(
-    // @ts-ignore
     queueScheduler.SchedulerAction
   );
   let epic$ = new Subject();
-
-  epic$.subscribe(function EpicSubscriber({ action, state, store }) {
-    let _output = userEpic(of(action), state, store);
-    _output.subscribe();
-  });
-
-  return function installPlugin(store) {
+  const epicPlugin = store => {
     monkeyPatchStore(store);
+    const actionSubject$ = new Subject();
+    const stateSubject$ = new Subject();
 
+    const action$ = actionSubject$
+      .asObservable()
+      .pipe(observeOn(uniqueQueueScheduler));
+
+    const state$ = stateSubject$
+      .asObservable()
+      .pipe(observeOn(uniqueQueueScheduler));
+
+    const result$ = epic$.pipe(
+      map(epic => {
+        const output$ = epic(action$, state$, store);
+        return output$;
+      }),
+      mergeMap(output$ =>
+        from(output$).pipe(
+          subscribeOn(uniqueQueueScheduler),
+          observeOn(uniqueQueueScheduler)
+        )
+      )
+    );
+    result$.subscribe(mutation => mutation && store.commit(mutation));
     store.subscribeAction(function observeActions(action, state) {
-      state = Object.assign({}, state);
-      epic$.next({ action, state, store });
+      actionSubject$.next(action);
+      stateSubject$.next(Object.assign({}, state));
     });
   };
+
+  epicPlugin.run = rootEpic => {
+    epic$.next(rootEpic);
+  };
+
+  return epicPlugin;
 }
 
 function monkeyPatchStore(store) {
@@ -108,3 +130,5 @@ function assert(condition, msg) {
     throw new Error("[vuex] " + msg);
   }
 }
+
+export default createPlugin;
