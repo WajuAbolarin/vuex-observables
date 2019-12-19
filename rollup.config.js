@@ -9,7 +9,7 @@ export default [
   {
     input: "src/main.js",
     output: {
-      name: "@waju/vuex-observable",
+      name: "vuex-observable",
       file: pkg.browser,
       format: "umd"
     },

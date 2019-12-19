@@ -1,5 +1,5 @@
 import { merge } from "rxjs";
-export function combineEpics(...epics) {
+export default function combineEpics(...epics) {
   const merger = (...args) =>
     merge(
       ...epics.map(epic => {

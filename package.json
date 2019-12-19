@@ -1,26 +1,26 @@
 {
   "name": "vuex-observable",
   "version": "0.0.1",
-  "description": "use rx-js magic for async in Vuex",
+  "description": "use rxjs magic for side effects in Vuex",
   "module": "dist/index.esm.js",
-  "main": "dist/index.cjs.js",
   "browser": "dist/index.umd.js",
+  "main": "dist/index.cjs.js",
   "sideEffects": false,
   "author": "waju.abolarin@gmail.com",
   "license": "MIT",
   "private": false,
   "peerDependencies": {
-    "rxjs": "6.x",
-    "vuex": "3.0"
+    "rxjs": "^6.5",
+    "vuex": "^3.0"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "rollup -c",
-    "dev": "rm -rf dist &&  rollup -c -w",
-    "test": "node test test.js",
-    "pretest": "npm run test"
+    "dev": " rollup -c -w",
+    "test": "jest",
+    "pretest": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

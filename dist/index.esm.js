@@ -1,4 +1,4 @@
-import { queueScheduler, Subject, from } from 'rxjs';
+import { merge, queueScheduler, Subject, from } from 'rxjs';
 import { observeOn, map, mergeMap, subscribeOn } from 'rxjs/operators';
 
 function _typeof(obj) {
@@ -13,6 +13,53 @@ function _typeof(obj) {
   }
 
   return _typeof(obj);
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function combineEpics() {
+  for (var _len = arguments.length, epics = new Array(_len), _key = 0; _key < _len; _key++) {
+    epics[_key] = arguments[_key];
+  }
+
+  var merger = function merger() {
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return merge.apply(void 0, _toConsumableArray(epics.map(function (epic) {
+      var output$ = epic.apply(void 0, args);
+      return output$;
+    })));
+  };
+
+  try {
+    Object.defineProperty(merger, "name", {
+      value: "combineEpics(".concat(epics.map(function (epic) {
+        return epic.name || "<anonymous>";
+      }).join(", "), ")")
+    });
+  } catch (e) {}
+
+  return merger;
 }
 
 function createPlugin() {
@@ -128,4 +175,4 @@ function assert(condition, msg) {
   }
 }
 
-export default createPlugin;
+export { combineEpics, createPlugin };
