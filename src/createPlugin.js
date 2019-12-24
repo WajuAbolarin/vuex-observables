@@ -9,11 +9,16 @@ export default function createPlugin() {
   );
   let epic$ = new Subject();
   const epicPlugin = store => {
-    monkeyPatchStore(store);
-    const actionSubject$ = new Subject();
+    store._mutations = new Proxy(store._mutations, {
+      get(mutations, actionName) {
+        return mutations[actionName] || [() => undefined];
+      }
+    });
+
+    const mutationSubject$ = new Subject();
     const stateSubject$ = new Subject();
 
-    const action$ = actionSubject$
+    const mutation$ = mutationSubject$
       .asObservable()
       .pipe(observeOn(uniqueQueueScheduler));
 
@@ -23,7 +28,8 @@ export default function createPlugin() {
 
     const result$ = epic$.pipe(
       map(epic => {
-        const output$ = epic(action$, state$, store);
+        // run
+        const output$ = epic(mutation$, state$, store);
         return output$;
       }),
       mergeMap(output$ =>
@@ -33,9 +39,16 @@ export default function createPlugin() {
         )
       )
     );
-    result$.subscribe(mutation => mutation && store.commit(mutation));
-    store.subscribeAction(function observeActions(action, state) {
-      actionSubject$.next(action);
+
+    result$.subscribe(mutation => {
+      console.log(`called`, mutation);
+      if (!mutation) return;
+      console.log(store._mutations[mutation.type]);
+      store.commit(mutation.type, mutation.payload);
+    });
+
+    store.subscribe(function observeMutations(mutation, state) {
+      mutationSubject$.next(mutation);
       stateSubject$.next(Object.assign({}, state));
     });
   };
@@ -45,88 +58,4 @@ export default function createPlugin() {
   };
 
   return epicPlugin;
-}
-
-function monkeyPatchStore(store) {
-  store.dispatch = function dispatch(_type, _payload) {
-    var this$1 = this;
-
-    var ref = unifyObjectStyle(_type, _payload);
-    var type = ref.type;
-    var payload = ref.payload;
-
-    var action = { type: type, payload: payload };
-    var entry = this._actions[type];
-    if (!entry) {
-      entry = this._actions[type] = [() => Promise.resolve()];
-    }
-
-    try {
-      this._actionSubscribers
-        .filter(function(sub) {
-          return sub.before;
-        })
-        .forEach(function(sub) {
-          return sub.before(action, this$1.state);
-        });
-    } catch (e) {
-      {
-        console.warn("[vuex] error in before action subscribers: ");
-        console.error(e);
-      }
-    }
-    var result =
-      entry.length > 1
-        ? Promise.all(
-            entry.map(function(handler) {
-              return handler(payload);
-            })
-          )
-        : entry[0](payload);
-
-    return result.then(function(res) {
-      try {
-        this$1._actionSubscribers
-          .filter(function(sub) {
-            return sub.after;
-          })
-          .forEach(function(sub) {
-            return sub.after(action, this$1.state);
-          });
-      } catch (e) {
-        {
-          console.warn("[vuex] error in after action subscribers: ");
-          console.error(e);
-        }
-      }
-      return res;
-    });
-  };
-}
-
-function unifyObjectStyle(type, payload, options) {
-  if (isObject(type) && type.type) {
-    options = payload;
-    payload = type;
-    type = type.type;
-  }
-
-  {
-    assert(
-      typeof type === "string",
-      "expects string as the type, but found " + typeof type + "."
-    );
-  }
-
-  return { type: type, payload: payload, options: options };
-}
-
-function isObject(obj) {
-  return obj !== null && typeof obj === "object";
-}
-
-function assert(condition, msg) {
-  if (!condition) {
-    throw new Error("[vuex] " + msg);
-  }
 }
