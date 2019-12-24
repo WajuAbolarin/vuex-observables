@@ -10,8 +10,12 @@ export default function createPlugin() {
   let epic$ = new Subject();
   const epicPlugin = store => {
     store._mutations = new Proxy(store._mutations, {
-      get(mutations, actionName) {
-        return mutations[actionName] || [() => undefined];
+      get(mutations, mutationName) {
+        let _mutation = mutations[mutationName];
+        if (_mutation) {
+          return _mutation;
+        }
+        return [() => undefined];
       }
     });
 
@@ -41,9 +45,7 @@ export default function createPlugin() {
     );
 
     result$.subscribe(mutation => {
-      console.log(`called`, mutation);
       if (!mutation) return;
-      console.log(store._mutations[mutation.type]);
       store.commit(mutation.type, mutation.payload);
     });
 

@@ -56,8 +56,14 @@ function createPlugin() {
 
   var epicPlugin = function epicPlugin(store) {
     store._mutations = new Proxy(store._mutations, {
-      get: function get(mutations, actionName) {
-        return mutations[actionName] || [function () {
+      get: function get(mutations, mutationName) {
+        var _mutation = mutations[mutationName];
+
+        if (_mutation) {
+          return _mutation;
+        }
+
+        return [function () {
           return undefined;
         }];
       }
@@ -74,9 +80,7 @@ function createPlugin() {
       return from(output$).pipe(subscribeOn(uniqueQueueScheduler), observeOn(uniqueQueueScheduler));
     }));
     result$.subscribe(function (mutation) {
-      console.log("called", mutation);
       if (!mutation) return;
-      console.log(store._mutations[mutation.type]);
       store.commit(mutation.type, mutation.payload);
     });
     store.subscribe(function observeMutations(mutation, state) {
