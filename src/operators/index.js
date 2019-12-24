@@ -1,0 +1,1 @@
+export { ofType } from "./nameIn";

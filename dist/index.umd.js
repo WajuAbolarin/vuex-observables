@@ -99,8 +99,20 @@
     return epicPlugin;
   }
 
+  function ofType(args) {
+    if (typeof args === "string") {
+      var matchTypes = function matchTypes(incomingType) {
+        return args.includes(incomingType.type);
+      };
+
+      args = args.split(",");
+      return operators.filter(matchTypes);
+    }
+  }
+
   exports.combineEpics = combineEpics;
   exports.createPlugin = createPlugin;
+  exports.ofType = ofType;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
